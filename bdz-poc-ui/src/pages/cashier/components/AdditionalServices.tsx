@@ -203,6 +203,17 @@ type StationServiceType =
   | 'luggage_storage'
   | 'parking';
 
+interface SelectedTicket {
+  id: string;
+  route: string;
+  date: Date;
+  passengers: Array<{
+    name: string;
+    seat: string;
+  }>;
+  class: string;
+}
+
 // Mock Data
 const MOCK_CATEGORIES = [
   {
@@ -327,6 +338,32 @@ const MOCK_SERVICES: AdditionalService[] = [
       'Необходима предварителна резервация',
     ],
   },
+  {
+    id: 'pet',
+    name: 'Превоз на домашен любимец',
+    description: 'Специално място за превоз на малък домашен любимец в транспортен бокс',
+    category: 'luggage',
+    status: 'available',
+    price: {
+      amount: 20,
+      currency: 'EUR',
+      perPerson: false,
+    },
+    icon: <Pets />,
+    requiresDetails: true,
+    restrictions: [
+      'Максимално тегло на животното с бокса: 10 кг',
+      'Необходима валидна здравна книжка',
+      'Транспортен бокс с размери до 60x40x40 см',
+      'Предварителна резервация задължителна',
+    ],
+    features: [
+      'Специално място за транспортен бокс',
+      'Възможност за провеждане на животното по време на спирки',
+      'Температурен контрол в багажния вагон',
+      'Помощ при качване и слизане с бокса',
+    ],
+  },
   // Assistance
   {
     id: 'mobility_assistance',
@@ -437,7 +474,7 @@ const AdditionalServices: React.FC = () => {
   const [isScanning, setIsScanning] = useState(false);
   const [activeTab, setActiveTab] = useState<ServiceCategory>('special_carriages');
   const [selectedServices, setSelectedServices] = useState<AdditionalService[]>([]);
-  const [selectedTicket, setSelectedTicket] = useState<any>(null);
+  const [selectedTicket, setSelectedTicket] = useState<SelectedTicket | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
@@ -544,7 +581,7 @@ const AdditionalServices: React.FC = () => {
             <Box>
               <Typography variant="subtitle2" color="text.secondary">Пътници</Typography>
               <Typography variant="body1">
-                {selectedTicket.passengers.map(p => p.name).join(', ')}
+                {selectedTicket.passengers.map((p: { name: string; seat: string }) => p.name).join(', ')}
               </Typography>
             </Box>
             <Box>
