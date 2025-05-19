@@ -262,15 +262,32 @@ const CashierDashboard: React.FC = () => {
             <CurrentTime />
           </Box>
 
-          <IconButton
+          <Button
             onClick={handleMenuIconClick}
-            size="small"
-            sx={{ mr: 2 }}
+            startIcon={<AppsIcon sx={{ fontSize: 28 }} />}
+            sx={{
+              mr: 2,
+              color: 'white',
+              backgroundColor: 'primary.main',
+              fontWeight: 'bold',
+              px: 2,
+              py: 1,
+              borderRadius: 2,
+              boxShadow: 2,
+              '&:hover': {
+                backgroundColor: 'primary.dark',
+                color: 'white',
+                boxShadow: 4,
+              },
+            }}
             aria-controls="quick-menu"
             aria-haspopup="true"
+            size="medium"
+            variant="contained"
           >
-            <AppsIcon />
-          </IconButton>
+            Меню
+          </Button>
+
           <Menu
             id="quick-menu"
             anchorEl={menuAnchorEl}
