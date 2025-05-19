@@ -71,7 +71,7 @@ import { bg } from 'date-fns/locale/bg';
 interface ReportCategory {
   id: string;
   label: string;
-  icon: React.ReactNode;
+  icon: React.ReactElement;
   description: string;
 }
 
@@ -665,7 +665,7 @@ const ReportsAndStatistics: React.FC = () => {
             <Tab
               key={category.id}
               value={category.id}
-              icon={category.icon}
+              icon={category.icon || undefined}
               label={category.label}
               iconPosition="start"
             />

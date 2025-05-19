@@ -81,7 +81,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     // Always Visible
     { label: 'Начало', path: '/', icon: <HomeIcon sx={{ mr: 1 }} />, show: 'always' },
     // Logged Out Only
-    { label: 'Вход касиер', path: '/cashier-login', icon: <VpnKeyIcon sx={{ mr: 1 }} />, show: 'loggedOut' },
+    { label: 'Вход', path: '/cashier-login', icon: <VpnKeyIcon sx={{ mr: 1 }} />, show: 'loggedOut' },
     // Logged In Cashier Only
     { label: 'Международно билетоиздаване', path: '/cashier/dashboard', icon: <DashboardIcon sx={{ mr: 1 }} />, show: 'loggedInCashier' },
     // Logged In (Any Role)

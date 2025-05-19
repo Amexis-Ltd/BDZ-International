@@ -613,7 +613,7 @@ const AdditionalServices: React.FC = () => {
             {service.description}
           </Typography>
           <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' }, gap: 1 }}>
-            <PriceTypography variant="subtitle1" component="div">
+            <PriceTypography variant="subtitle1">
               {service.price.amount} {service.price.currency}
               {service.price.perPerson && ' / човек'}
               {service.price.perCabin && ' / купе'}

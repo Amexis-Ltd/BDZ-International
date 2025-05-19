@@ -183,9 +183,17 @@ export default function TicketIssuance() {
         <Typography variant="h5" gutterBottom sx={{ mb: 3 }}>
           Популярни международни маршрути
         </Typography>
-        <Grid container spacing={3}>
+        <Box sx={{ 
+          display: 'grid', 
+          gridTemplateColumns: { 
+            xs: '1fr', 
+            sm: 'repeat(2, 1fr)', 
+            md: 'repeat(3, 1fr)' 
+          },
+          gap: 3 
+        }}>
           {POPULAR_ROUTES.map((route) => (
-            <Grid item xs={12} sm={6} md={4} key={route.id}>
+            <Box key={route.id}>
               <Card 
                 sx={{ 
                   height: '100%',
@@ -231,9 +239,9 @@ export default function TicketIssuance() {
                   </CardContent>
                 </CardActionArea>
               </Card>
-            </Grid>
+            </Box>
           ))}
-        </Grid>
+        </Box>
       </Box>
 
       {/* New Search Section */}

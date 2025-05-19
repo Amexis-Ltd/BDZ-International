@@ -51,7 +51,7 @@ const LoginPage: React.FC = () => {
             Вход в системата
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Модул Стационарна каса
+            Международно билетоиздаване
           </Typography>
         </Box>
         
