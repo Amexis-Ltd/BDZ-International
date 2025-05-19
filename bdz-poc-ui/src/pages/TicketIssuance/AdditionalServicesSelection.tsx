@@ -275,7 +275,9 @@ export const AdditionalServicesSelection: React.FC<AdditionalServicesSelectionPr
     const updatedServices = selectedServices.map(service => {
       if (service.serviceId === serviceId) {
         const serviceData = SERVICES.find(s => s.id === serviceId);
-        const option = serviceData?.options?.find(o => o.id === optionId);
+        if (!serviceData) return service;
+        
+        const option = serviceData.options?.find(o => o.id === optionId);
         
         if (!option) return service;
         
@@ -292,7 +294,7 @@ export const AdditionalServicesSelection: React.FC<AdditionalServicesSelectionPr
         return {
           ...service,
           selectedOptions: newSelectedOptions,
-          totalPrice: (serviceData?.price || 0) * service.quantity + optionsPrice
+          totalPrice: serviceData.price * service.quantity + optionsPrice
         };
       }
       return service;
@@ -408,20 +410,20 @@ export const AdditionalServicesSelection: React.FC<AdditionalServicesSelectionPr
                   label={isSelected ? 'Избрано' : 'Избери'}
                 />
                 
-                {isSelected && (
+                {isSelected && selectedService && (
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                     <IconButton
                       size="small"
                       onClick={() => handleQuantityChange(service.id, -1)}
-                      disabled={selectedService?.quantity <= 1}
+                      disabled={selectedService.quantity <= 1}
                     >
                       <RemoveIcon />
                     </IconButton>
-                    <Typography>{selectedService?.quantity}</Typography>
+                    <Typography>{selectedService.quantity}</Typography>
                     <IconButton
                       size="small"
                       onClick={() => handleQuantityChange(service.id, 1)}
-                      disabled={selectedService?.quantity >= (service.maxQuantity || 10)}
+                      disabled={selectedService.quantity >= (service.maxQuantity || 10)}
                     >
                       <AddIcon />
                     </IconButton>

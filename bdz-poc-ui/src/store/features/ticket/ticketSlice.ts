@@ -107,63 +107,78 @@ const ticketSlice = createSlice({
       };
     },
     setRouteSelection: (state, action: PayloadAction<RouteSelectionPayload & { passengers?: PassengerCategories; basePrice?: number }>) => {
-      if (state.currentTicket) {
-        if (action.payload.basePrice !== undefined) {
-          state.currentTicket.basePrice = action.payload.basePrice;
-        }
+      if (!state.currentTicket) {
+        console.error("Cannot set route selection: No current ticket process started.");
+        return;
+      }
 
-        state.currentTicket.route = {
-          fromStation: action.payload.fromStation,
-          toStation: action.payload.toStation,
-          viaStation: action.payload.viaStation,
-          departureDate: action.payload.departureDate,
-          departureTime: action.payload.departureTime,
-          basePrice: action.payload.basePrice
-        };
+      const ticket = state.currentTicket;
+      if (action.payload.basePrice !== undefined) {
+        ticket.basePrice = action.payload.basePrice;
+      }
+
+      ticket.route = {
+        fromStation: action.payload.fromStation,
+        toStation: action.payload.toStation,
+        viaStation: action.payload.viaStation,
+        departureDate: action.payload.departureDate,
+        departureTime: action.payload.departureTime,
+        basePrice: action.payload.basePrice
+      };
+      
+      if (action.payload.passengers) {
+        ticket.passengerCategories = action.payload.passengers;
+        ticket.passengerCount = Object.values(action.payload.passengers).reduce((sum, count) => sum + count, 0);
         
-        if (action.payload.passengers) {
-          state.currentTicket.passengerCategories = action.payload.passengers;
-          state.currentTicket.passengerCount = Object.values(action.payload.passengers).reduce((sum, count) => sum + count, 0);
-          
-          state.currentTicket.passengers = [];
-          Object.entries(action.payload.passengers).forEach(([category, count]) => {
-            for (let i = 0; i < count; i++) {
-              state.currentTicket.passengers.push({
-                category: category as 'adults' | 'children' | 'seniors' | 'students',
-                discount: 'Без намаление',
-                seatNumber: ''
-              });
-            }
-          });
+        const newPassengers: Passenger[] = [];
+        Object.entries(action.payload.passengers).forEach(([category, count]) => {
+          for (let i = 0; i < count; i++) {
+            newPassengers.push({
+              category: category as 'adults' | 'children' | 'seniors' | 'students',
+              discount: 'Без намаление',
+              seatNumber: ''
+            });
+          }
+        });
+        
+        if (state.currentTicket) {
+          state.currentTicket.passengers = newPassengers;
+          calculateTotalPrice(state);
         }
-        
-        calculateTotalPrice(state);
       }
     },
     setPassengerCount: (state, action: PayloadAction<number>) => {
-      if (state.currentTicket) {
-        const newCount = Math.max(1, action.payload);
-        const currentCount = state.currentTicket.passengers.length;
-        state.currentTicket.passengerCount = newCount;
-
-        console.log(`Setting passenger count to ${newCount} (was ${currentCount})`);
-
-        if (newCount > currentCount) {
-          for (let i = currentCount; i < newCount; i++) {
-            state.currentTicket.passengers.push({ 
-              category: 'adults',
-              discount: 'Без намаление', 
-              seatNumber: '' 
-            });
-          }
-        } else if (newCount < currentCount) {
-          state.currentTicket.passengers.splice(newCount);
-        }
-
-        calculateTotalPrice(state);
-      } else {
+      if (!state.currentTicket) {
         console.error("Cannot set passenger count: No current ticket process started.");
+        return;
       }
+
+      const ticket = state.currentTicket;
+      const newCount = Math.max(1, action.payload);
+      const currentCount = ticket.passengers.length;
+      ticket.passengerCount = newCount;
+
+      console.log(`Setting passenger count to ${newCount} (was ${currentCount})`);
+
+      if (newCount > currentCount) {
+        const newPassengers: Passenger[] = [...ticket.passengers];
+        for (let i = currentCount; i < newCount; i++) {
+          newPassengers.push({ 
+            category: 'adults',
+            discount: 'Без намаление', 
+            seatNumber: '' 
+          });
+        }
+        if (state.currentTicket) {
+          state.currentTicket.passengers = newPassengers;
+        }
+      } else if (newCount < currentCount) {
+        if (state.currentTicket) {
+          state.currentTicket.passengers = ticket.passengers.slice(0, newCount);
+        }
+      }
+
+      calculateTotalPrice(state);
     },
     setPassengerCategories: (state, action: PayloadAction<PassengerCategories>) => {
       if (!state.currentTicket) {
@@ -175,18 +190,21 @@ const ticketSlice = createSlice({
       ticket.passengerCategories = action.payload;
       ticket.passengerCount = Object.values(action.payload).reduce((sum, count) => sum + count, 0);
       
-      ticket.passengers = [];
+      const newPassengers: Passenger[] = [];
       Object.entries(action.payload).forEach(([category, count]) => {
         for (let i = 0; i < count; i++) {
-          ticket.passengers.push({
+          newPassengers.push({
             category: category as 'adults' | 'children' | 'seniors' | 'students',
             discount: 'Без намаление',
             seatNumber: ''
           });
         }
       });
-
-      calculateTotalPrice(state);
+      
+      if (state.currentTicket) {
+        state.currentTicket.passengers = newPassengers;
+        calculateTotalPrice(state);
+      }
     },
     setReturnType: (state, action: PayloadAction<'one-way' | 'round-trip-open' | 'round-trip-fixed'>) => {
       if (state.currentTicket) {
