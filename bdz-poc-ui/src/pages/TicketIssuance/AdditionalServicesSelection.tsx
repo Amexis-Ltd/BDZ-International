@@ -8,7 +8,6 @@ import {
   Card,
   CardContent,
   CardMedia,
-  Grid,
   Button,
   Checkbox,
   FormControlLabel,
@@ -377,71 +376,71 @@ export const AdditionalServicesSelection: React.FC<AdditionalServicesSelectionPr
         }}
       >
         <CardContent>
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={8}>
-              <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
-                <Box sx={{ color: 'primary.main' }}>
-                  {service.icon}
-                </Box>
-                <Box sx={{ flex: 1 }}>
-                  <Typography variant="h6" gutterBottom>
-                    {service.name}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" paragraph>
-                    {service.description}
-                  </Typography>
-                  <Typography variant="h6" color="primary">
-                    {service.price} лв. {service.pricePerPassenger ? 'на пътник' : ''}
-                  </Typography>
-                </Box>
+          <Box sx={{ 
+            display: 'grid', 
+            gridTemplateColumns: { xs: '1fr', sm: '2fr 1fr' },
+            gap: 2 
+          }}>
+            <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
+              <Box sx={{ color: 'primary.main' }}>
+                {service.icon}
               </Box>
-            </Grid>
+              <Box sx={{ flex: 1 }}>
+                <Typography variant="h6" gutterBottom>
+                  {service.name}
+                </Typography>
+                <Typography variant="body2" color="text.secondary" paragraph>
+                  {service.description}
+                </Typography>
+                <Typography variant="h6" color="primary">
+                  {service.price} лв. {service.pricePerPassenger ? 'на пътник' : ''}
+                </Typography>
+              </Box>
+            </Box>
             
-            <Grid item xs={12} sm={4}>
-              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 1 }}>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={isSelected}
-                      onChange={() => handleServiceSelect(service)}
-                      disabled={!service.available}
-                    />
-                  }
-                  label={isSelected ? 'Избрано' : 'Избери'}
-                />
-                
-                {isSelected && selectedService && (
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <IconButton
-                      size="small"
-                      onClick={() => handleQuantityChange(service.id, -1)}
-                      disabled={selectedService.quantity <= 1}
-                    >
-                      <RemoveIcon />
-                    </IconButton>
-                    <Typography>{selectedService.quantity}</Typography>
-                    <IconButton
-                      size="small"
-                      onClick={() => handleQuantityChange(service.id, 1)}
-                      disabled={selectedService.quantity >= (service.maxQuantity || 10)}
-                    >
-                      <AddIcon />
-                    </IconButton>
-                  </Box>
-                )}
-                
-                {service.options && (
-                  <Button
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 1 }}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={isSelected}
+                    onChange={() => handleServiceSelect(service)}
+                    disabled={!service.available}
+                  />
+                }
+                label={isSelected ? 'Избрано' : 'Избери'}
+              />
+              
+              {isSelected && selectedService && (
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <IconButton
                     size="small"
-                    endIcon={isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-                    onClick={() => toggleServiceExpand(service.id)}
+                    onClick={() => handleQuantityChange(service.id, -1)}
+                    disabled={selectedService.quantity <= 1}
                   >
-                    Опции
-                  </Button>
-                )}
-              </Box>
-            </Grid>
-          </Grid>
+                    <RemoveIcon />
+                  </IconButton>
+                  <Typography>{selectedService.quantity}</Typography>
+                  <IconButton
+                    size="small"
+                    onClick={() => handleQuantityChange(service.id, 1)}
+                    disabled={selectedService.quantity >= (service.maxQuantity || 10)}
+                  >
+                    <AddIcon />
+                  </IconButton>
+                </Box>
+              )}
+              
+              {service.options && (
+                <Button
+                  size="small"
+                  endIcon={isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                  onClick={() => toggleServiceExpand(service.id)}
+                >
+                  Опции
+                </Button>
+              )}
+            </Box>
+          </Box>
 
           {service.options && (
             <Collapse in={isExpanded}>
@@ -552,19 +551,23 @@ export const AdditionalServicesSelection: React.FC<AdditionalServicesSelectionPr
       </Box>
 
       {/* Main Content */}
-      <Grid container spacing={3}>
+      <Box sx={{ 
+        display: 'grid', 
+        gridTemplateColumns: { xs: '1fr', md: '2fr 1fr' },
+        gap: 3 
+      }}>
         {/* Services Selection */}
-        <Grid item xs={12} md={8}>
+        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
           {renderCategoryTabs()}
           
           <Box>
             {SERVICES.filter(service => service.category === activeCategory)
               .map(service => renderServiceCard(service))}
           </Box>
-        </Grid>
+        </Box>
 
         {/* Selected Services Summary */}
-        <Grid item xs={12} md={4}>
+        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
           <Paper sx={{ p: 2, position: isMobile ? 'static' : 'sticky', top: 24 }}>
             <Typography variant="h6" gutterBottom>
               Избрани услуги
@@ -622,8 +625,8 @@ export const AdditionalServicesSelection: React.FC<AdditionalServicesSelectionPr
               </Box>
             </Box>
           </Paper>
-        </Grid>
-      </Grid>
+        </Box>
+      </Box>
 
       {/* Navigation Buttons */}
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 4, gap: 2 }}>

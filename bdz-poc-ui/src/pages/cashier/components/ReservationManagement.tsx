@@ -6,7 +6,6 @@ import {
   TextField,
   Button,
   IconButton,
-  Grid,
   Tabs,
   Tab,
   Table,
@@ -414,8 +413,13 @@ export default function ReservationManagement() {
   // Render functions
   const renderSearchSection = () => (
     <Paper sx={{ p: 2, mb: 2 }}>
-      <Grid container spacing={2} alignItems="center">
-        <Grid xs={12} md={6}>
+      <Box sx={{ 
+        display: 'grid', 
+        gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
+        gap: 2,
+        alignItems: 'center'
+      }}>
+        <Box>
           <Box sx={{ display: 'flex', gap: 1 }}>
             <TextField
               fullWidth
@@ -439,8 +443,8 @@ export default function ReservationManagement() {
               Търси
             </Button>
           </Box>
-        </Grid>
-        <Grid xs={12} md={6}>
+        </Box>
+        <Box>
           <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
             <Button
               variant={searchType === 'reservation' ? 'contained' : 'outlined'}
@@ -464,8 +468,8 @@ export default function ReservationManagement() {
               По контакт
             </Button>
           </Box>
-        </Grid>
-      </Grid>
+        </Box>
+      </Box>
 
       {/* Recent reservations */}
       {recentReservations.length > 0 && (
@@ -652,8 +656,12 @@ export default function ReservationManagement() {
             <React.Fragment key={segment.id}>
               <Card variant="outlined" sx={{ mb: 1 }}>
                 <CardContent>
-                  <Grid container spacing={2}>
-                    <Grid xs={12} sm={3}>
+                  <Box sx={{ 
+                    display: 'grid', 
+                    gridTemplateColumns: { xs: '1fr', sm: '1fr 2fr 1fr' },
+                    gap: 2 
+                  }}>
+                    <Box>
                       <Typography variant="subtitle2" color="text.secondary">
                         {format(new Date(segment.departureTime), 'HH:mm')}
                       </Typography>
@@ -665,8 +673,8 @@ export default function ReservationManagement() {
                           Платформа {segment.platform}
                         </Typography>
                       )}
-                    </Grid>
-                    <Grid xs={12} sm={6}>
+                    </Box>
+                    <Box>
                       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }}>
                         <Train color="action" />
                         <Typography variant="body2">
@@ -676,8 +684,8 @@ export default function ReservationManagement() {
                       <Typography variant="caption" color="text.secondary" sx={{ display: 'block', textAlign: 'center' }}>
                         {Math.floor((new Date(segment.arrivalTime).getTime() - new Date(segment.departureTime).getTime()) / (1000 * 60))} мин
                       </Typography>
-                    </Grid>
-                    <Grid xs={12} sm={3}>
+                    </Box>
+                    <Box>
                       <Typography variant="subtitle2" color="text.secondary" align="right">
                         {format(new Date(segment.arrivalTime), 'HH:mm')}
                       </Typography>
@@ -689,8 +697,8 @@ export default function ReservationManagement() {
                           Платформа {segment.platform}
                         </Typography>
                       )}
-                    </Grid>
-                  </Grid>
+                    </Box>
+                  </Box>
                 </CardContent>
               </Card>
               {index < selectedReservation.route.length - 1 && (
@@ -714,8 +722,12 @@ export default function ReservationManagement() {
           {selectedReservation.passengers.map((passenger, index) => (
             <Card key={passenger.id} variant="outlined" sx={{ mb: 1 }}>
               <CardContent>
-                <Grid container spacing={2}>
-                  <Grid xs={12} sm={6}>
+                <Box sx={{ 
+                  display: 'grid', 
+                  gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' },
+                  gap: 2 
+                }}>
+                  <Box>
                     <Typography variant="subtitle2">
                       {passenger.firstName} {passenger.lastName}
                     </Typography>
@@ -725,8 +737,8 @@ export default function ReservationManagement() {
                     <Typography variant="body2" color="text.secondary">
                       {passenger.documentType}: {passenger.documentNumber}
                     </Typography>
-                  </Grid>
-                  <Grid xs={12} sm={6}>
+                  </Box>
+                  <Box>
                     <Typography variant="body2">
                       {passenger.contactEmail && (
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 0.5 }}>
@@ -741,8 +753,8 @@ export default function ReservationManagement() {
                         </Box>
                       )}
                     </Typography>
-                  </Grid>
-                </Grid>
+                  </Box>
+                </Box>
                 {passenger.discounts.length > 0 && (
                   <Box sx={{ mt: 1 }}>
                     <Stack direction="row" spacing={1}>
@@ -793,16 +805,20 @@ export default function ReservationManagement() {
         </Typography>
         <Card variant="outlined">
           <CardContent>
-            <Grid container spacing={2}>
-              <Grid xs={12} sm={6}>
+            <Box sx={{ 
+              display: 'grid', 
+              gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' },
+              gap: 2 
+            }}>
+              <Box>
                 <Typography variant="body2" color="text.secondary">
                   Обща цена
                 </Typography>
                 <Typography variant="h6" color="primary">
                   {selectedReservation.totalPrice.toFixed(2)} лв.
                 </Typography>
-              </Grid>
-              <Grid xs={12} sm={6}>
+              </Box>
+              <Box>
                 <Typography variant="body2" color="text.secondary">
                   Статус на плащане
                 </Typography>
@@ -819,8 +835,8 @@ export default function ReservationManagement() {
                     'info'
                   }
                 />
-              </Grid>
-            </Grid>
+              </Box>
+            </Box>
           </CardContent>
         </Card>
       </Paper>
@@ -834,17 +850,23 @@ export default function ReservationManagement() {
       {renderSearchSection()}
 
       {/* Main content */}
-      <Grid container spacing={2}>
+      <Box sx={{ 
+        display: 'flex', 
+        flexDirection: 'column',
+        gap: 2 
+      }}>
         {/* Active reservations */}
-        <Grid xs={12} md={4}>
+        <Box>
           {renderActiveReservations()}
-        </Grid>
+        </Box>
 
         {/* Reservation details */}
-        <Grid xs={12} md={8}>
-          {renderReservationDetails()}
-        </Grid>
-      </Grid>
+        {selectedReservation && (
+          <Box>
+            {renderReservationDetails()}
+          </Box>
+        )}
+      </Box>
 
       {/* Loading indicator */}
       {isLoading && (
@@ -860,7 +882,7 @@ export default function ReservationManagement() {
         </Alert>
       )}
 
-      {/* Dialogs will be added here */}
+      {/* Dialogs */}
       {/* Confirmation Dialog */}
       <Dialog
         open={showConfirmDialog}
@@ -922,16 +944,20 @@ export default function ReservationManagement() {
             <Typography variant="subtitle2" gutterBottom>
               Детайли на плащане:
             </Typography>
-            <Grid container spacing={2}>
-              <Grid xs={12}>
+            <Box sx={{ 
+              display: 'grid', 
+              gridTemplateColumns: '1fr',
+              gap: 2 
+            }}>
+              <Box>
                 <Typography variant="body2" color="text.secondary">
                   Обща сума за плащане
                 </Typography>
                 <Typography variant="h6" color="primary">
                   {selectedReservation?.totalPrice.toFixed(2)} лв.
                 </Typography>
-              </Grid>
-              <Grid xs={12}>
+              </Box>
+              <Box>
                 <FormControl fullWidth>
                   <InputLabel>Начин на плащане</InputLabel>
                   <Select
@@ -943,8 +969,8 @@ export default function ReservationManagement() {
                     <MenuItem value="bank_transfer">Банков превод</MenuItem>
                   </Select>
                 </FormControl>
-              </Grid>
-              <Grid xs={12}>
+              </Box>
+              <Box>
                 <FormControl fullWidth>
                   <InputLabel>Формат на билета</InputLabel>
                   <Select
@@ -956,8 +982,8 @@ export default function ReservationManagement() {
                     <MenuItem value="mobile">Мобилен</MenuItem>
                   </Select>
                 </FormControl>
-              </Grid>
-            </Grid>
+              </Box>
+            </Box>
           </Box>
         </DialogContent>
         <DialogActions>

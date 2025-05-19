@@ -6,7 +6,6 @@ import {
   TextField,
   Button,
   IconButton,
-  Grid,
   Card,
   CardContent,
   Divider,
@@ -80,7 +79,7 @@ import { bg } from 'date-fns/locale';
 type TicketStatus = 'valid' | 'invalid' | 'warning' | 'used' | 'expired' | 'cancelled';
 type TicketType = 'international' | 'domestic';
 type TicketFormat = 'electronic' | 'paper';
-type PassengerCategory = 'adult' | 'child' | 'youth' | 'senior';
+type PassengerCategory = 'adult' | 'child' | 'youth' | 'senior' | 'student';
 type SegmentStatus = 'upcoming' | 'used' | 'cancelled';
 type ValidationStatus = 'pending' | 'validated' | 'rejected';
 type ConnectionStatus = 'online' | 'offline';
@@ -538,8 +537,13 @@ const TicketValidation: React.FC = () => {
         Проверка на билет
       </Typography>
       
-      <Grid container spacing={2} alignItems="center">
-        <Grid item xs={12} md={8} component="div">
+      <Box sx={{ 
+        display: 'grid', 
+        gridTemplateColumns: { xs: '1fr', md: '2fr 1fr' },
+        gap: 2,
+        alignItems: 'center'
+      }}>
+        <Box>
           <Box sx={{ display: 'flex', gap: 1 }}>
             <TextField
               fullWidth
@@ -569,9 +573,9 @@ const TicketValidation: React.FC = () => {
               {isLoading ? <CircularProgress size={24} /> : 'Валидирай'}
             </ValidationButton>
           </Box>
-        </Grid>
+        </Box>
         
-        <Grid item xs={12} md={4} component="div">
+        <Box>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <Typography variant="body2" color="text.secondary">
               Статус на връзката:
@@ -583,8 +587,8 @@ const TicketValidation: React.FC = () => {
               size="small"
             />
           </Box>
-        </Grid>
-      </Grid>
+        </Box>
+      </Box>
     </StyledPaper>
   );
 
@@ -621,13 +625,15 @@ const TicketValidation: React.FC = () => {
           />
         </Box>
 
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={6} component="div">
+        <Box sx={{ 
+          display: 'grid', 
+          gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
+          gap: 2 
+        }}>
+          <Box>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
               <ConfirmationNumber />
-              <Typography variant="subtitle1">
-                {currentTicket.ticketNumber}
-              </Typography>
+              <Typography variant="h6">Детайли за билета</Typography>
             </Box>
             
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
@@ -647,18 +653,12 @@ const TicketValidation: React.FC = () => {
                 ).join(' | ')}
               </Typography>
             </Box>
-          </Grid>
+          </Box>
 
-          <Grid item xs={12} md={6} component="div">
+          <Box>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
               <EventSeat />
-              <Typography>
-                {currentTicket.route.map(segment => 
-                  segment.seats.map(seat => 
-                    `Вагон ${seat.wagonNumber}, Място ${seat.seatNumber} (${seat.class})`
-                  ).join(', ')
-                ).join(' | ')}
-              </Typography>
+              <Typography variant="h6">Места и пътници</Typography>
             </Box>
 
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
@@ -678,8 +678,8 @@ const TicketValidation: React.FC = () => {
                 </Typography>
               </Box>
             )}
-          </Grid>
-        </Grid>
+          </Box>
+        </Box>
 
         <Divider sx={{ my: 2 }} />
 
