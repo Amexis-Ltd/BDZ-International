@@ -13,6 +13,7 @@ import {
   MenuItem,
   ListItemIcon,
   ListItemText,
+  Button,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import {
@@ -32,6 +33,7 @@ import {
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../../store/hooks';
 import { selectUsername, selectUserRole, logout } from '../../store/features/auth/authSlice';
+import { CurrentTime } from '../../components/CurrentTime';
 
 // Styled components
 const Main = styled('main')(({ theme }) => ({
@@ -159,17 +161,40 @@ const CashierLayout: React.FC<CashierLayoutProps> = ({ children }) => {
       <StyledAppBar position="fixed">
         <Toolbar>
           <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
-            Международно билетоиздаване
+            БДЖ Пътнически превози - Международно билетоиздаване
           </Typography>
-          <IconButton
+          
+          {/* Current Time */}
+          <Box sx={{ display: { xs: 'none', md: 'block' }, mr: 3 }}>
+            <CurrentTime />
+          </Box>
+
+          <Button
             onClick={handleMenuIconClick}
-            size="small"
-            sx={{ mr: 2 }}
+            startIcon={<AppsIcon sx={{ fontSize: 28 }} />}
+            sx={{
+              mr: 2,
+              color: 'white',
+              backgroundColor: 'primary.main',
+              fontWeight: 'bold',
+              px: 2,
+              py: 1,
+              borderRadius: 2,
+              boxShadow: 2,
+              '&:hover': {
+                backgroundColor: 'primary.dark',
+                color: 'white',
+                boxShadow: 4,
+              },
+            }}
             aria-controls="quick-menu"
             aria-haspopup="true"
+            size="medium"
+            variant="contained"
           >
-            <AppsIcon />
-          </IconButton>
+            Меню
+          </Button>
+
           <Menu
             id="quick-menu"
             anchorEl={menuAnchorEl}
@@ -195,6 +220,7 @@ const CashierLayout: React.FC<CashierLayoutProps> = ({ children }) => {
               </MenuItem>
             ))}
           </Menu>
+
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <Typography variant="body2" sx={{ display: { xs: 'none', sm: 'block' } }}>
               {username}
