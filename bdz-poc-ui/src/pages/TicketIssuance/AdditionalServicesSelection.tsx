@@ -61,6 +61,8 @@ interface Service {
   maxQuantity?: number;
   available: boolean;
   incompatibleWith?: string[];
+  features?: string[];
+  restrictions?: string[];
 }
 
 interface ServiceOption {
@@ -89,78 +91,160 @@ interface SelectedService {
 // Mock data for service categories
 const SERVICE_CATEGORIES: CategoryInfo[] = [
   {
+    id: 'luggage',
+    name: 'Багаж и транспорт',
+    description: 'Допълнителни опции за багаж и превоз на специални предмети',
+    icon: <LuggageIcon />
+  },
+  {
     id: 'accommodation',
-    name: 'Места и настаняване',
-    description: 'Изберете удобно настаняване за вашето пътуване',
+    name: 'Специални вагони и места',
+    description: 'Изберете удобен спален вагон или специално място за вашето пътуване',
     icon: <HotelIcon />
   },
   {
     id: 'food',
-    name: 'Хранене и напитки',
-    description: 'Подобрете пътуването си с вкусни ястия и напитки',
+    name: 'Хранене и кетъринг',
+    description: 'Поръчайте храна и напитки за вашето пътуване',
     icon: <RestaurantIcon />
   },
   {
-    id: 'luggage',
-    name: 'Багаж и транспорт',
-    description: 'Допълнителни опции за багаж и специален товар',
-    icon: <LuggageIcon />
+    id: 'assistance',
+    name: 'Асистенция за пътници',
+    description: 'Специална помощ и подкрепа по време на пътуването',
+    icon: <SupportIcon />
   },
   {
     id: 'insurance',
-    name: 'Застраховки',
-    description: 'Защитете пътуването си с подходяща застраховка',
+    name: 'Застраховки и допълнителни защити',
+    description: 'Защита и осигуровки за вашето пътуване',
     icon: <SecurityIcon />
-  },
-  {
-    id: 'assistance',
-    name: 'Асистенция и комфорт',
-    description: 'Специални услуги за по-комфортно пътуване',
-    icon: <SupportIcon />
   }
 ];
 
 // Mock data for services
 const SERVICES: Service[] = [
-  // Accommodation services
+  // Luggage services
   {
-    id: 'sleeping-car-single',
-    name: 'Единично купе в спален вагон',
-    description: 'Приватно купе с единично легло, включва постелно бельо и тоалетни принадлежности',
-    price: 50,
-    pricePerPassenger: true,
-    category: 'accommodation',
-    icon: <HotelIcon />,
-    available: true
+    id: 'bicycle',
+    name: 'Превоз на велосипед',
+    description: 'Специално място за превоз на велосипед',
+    price: 15,
+    pricePerPassenger: false,
+    category: 'luggage',
+    icon: <LuggageIcon />,
+    available: true,
+    maxQuantity: 1,
+    restrictions: [
+      'Максимални размери: 180x80x40 см',
+      'Максимално тегло: 25 кг',
+      'Необходима предварителна резервация'
+    ]
   },
   {
-    id: 'sleeping-car-double',
-    name: 'Двойно купе в спален вагон',
-    description: 'Приватно купе с две легла, включва постелно бельо и тоалетни принадлежности',
-    price: 40,
+    id: 'pet',
+    name: 'Превоз на домашен любимец',
+    description: 'Специално място за превоз на малък домашен любимец в транспортен бокс',
+    price: 20,
+    pricePerPassenger: false,
+    category: 'luggage',
+    icon: <LuggageIcon />,
+    available: true,
+    maxQuantity: 1,
+    restrictions: [
+      'Максимално тегло на животното с бокса: 10 кг',
+      'Необходима валидна здравна книжка',
+      'Транспортен бокс с размери до 60x40x40 см',
+      'Предварителна резервация задължителна'
+    ]
+  },
+  // Accommodation services
+  {
+    id: 'single_cabin',
+    name: 'Единично купе в спален вагон',
+    description: 'Приватно купе с единично легло, тоалетна и душ',
+    price: 120,
     pricePerPassenger: true,
     category: 'accommodation',
     icon: <HotelIcon />,
     available: true,
-    incompatibleWith: ['sleeping-car-single', 'sleeping-car-triple']
+    features: [
+      'Приватно купе',
+      'Единично легло',
+      'Тоалетна и душ',
+      'Безплатен WiFi',
+      'Закуска включена'
+    ]
+  },
+  {
+    id: 'double_cabin',
+    name: 'Двойно купе в спален вагон',
+    description: 'Приватно купе с две легла, тоалетна и душ',
+    price: 180,
+    pricePerPassenger: true,
+    category: 'accommodation',
+    icon: <HotelIcon />,
+    available: true,
+    features: [
+      'Приватно купе',
+      'Две легла',
+      'Тоалетна и душ',
+      'Безплатен WiFi',
+      'Закуска включена'
+    ]
   },
   // Food services
   {
-    id: 'standard-menu',
-    name: 'Стандартно меню',
-    description: 'Традиционна кухня с опции за закуска, обяд и вечеря',
-    price: 15,
+    id: 'standard_lunch',
+    name: 'Стандартен обяд',
+    description: 'Традиционно меню с основно ястие, салата и десерт',
+    price: 25,
     pricePerPassenger: true,
     category: 'food',
     icon: <RestaurantIcon />,
     available: true,
-    options: [
-      { id: 'breakfast', name: 'Закуска', price: 15, description: 'Континентална закуска' },
-      { id: 'lunch', name: 'Обяд', price: 20, description: 'Традиционен обяд' },
-      { id: 'dinner', name: 'Вечеря', price: 20, description: 'Традиционна вечеря' }
+    features: [
+      'Основно ястие',
+      'Салата',
+      'Десерт',
+      'Напитка по избор',
+      'Хлебче'
     ]
   },
-  // Add more services for other categories...
+  // Assistance services
+  {
+    id: 'mobility_assistance',
+    name: 'Асистенция за пътници с ограничена подвижност',
+    description: 'Помощ при качване, слизане и прекачване',
+    price: 0,
+    pricePerPassenger: true,
+    category: 'assistance',
+    icon: <SupportIcon />,
+    available: true,
+    features: [
+      'Помощ при качване и слизане',
+      'Асистенция при прекачване',
+      'Помощ с багаж',
+      'Специален транспорт в гарата'
+    ]
+  },
+  // Insurance services
+  {
+    id: 'basic_insurance',
+    name: 'Базова туристическа застраховка',
+    description: 'Основно покритие за медицински разходи и багаж',
+    price: 10,
+    pricePerPassenger: true,
+    category: 'insurance',
+    icon: <SecurityIcon />,
+    available: true,
+    features: [
+      'Медицински разходи до 10,000 EUR',
+      'Покритие на багаж до 1,000 EUR',
+      'Правна помощ',
+      '24/7 поддръжка'
+    ]
+  }
 ];
 
 interface AdditionalServicesSelectionProps {
@@ -178,10 +262,10 @@ export const AdditionalServicesSelection: React.FC<AdditionalServicesSelectionPr
   const currentTicket = useAppSelector(selectCurrentTicket);
   
   // State
-  const [activeCategory, setActiveCategory] = useState<ServiceCategory>('accommodation');
+  const [activeCategory, setActiveCategory] = useState<ServiceCategory>('luggage');
   const [selectedServices, setSelectedServices] = useState<SelectedService[]>([]);
   const [expandedService, setExpandedService] = useState<string | null>(null);
-  const [mobileCategorySelect, setMobileCategorySelect] = useState<string>('accommodation');
+  const [mobileCategorySelect, setMobileCategorySelect] = useState<string>('luggage');
   
   // Calculate totals
   const subtotal = selectedServices.reduce((sum, service) => sum + service.totalPrice, 0);
@@ -218,7 +302,8 @@ export const AdditionalServicesSelection: React.FC<AdditionalServicesSelectionPr
       const newService: SelectedService = {
         serviceId: service.id,
         quantity: 1,
-        totalPrice: service.price
+        totalPrice: service.price,
+        selectedOptions: []
       };
       
       // Check for incompatible services
@@ -249,11 +334,23 @@ export const AdditionalServicesSelection: React.FC<AdditionalServicesSelectionPr
     const updatedServices = selectedServices.map(service => {
       if (service.serviceId === serviceId) {
         const serviceData = SERVICES.find(s => s.id === serviceId);
-        const newQuantity = Math.max(1, Math.min(service.quantity + change, serviceData?.maxQuantity || 10));
+        if (!serviceData) return service;
+
+        const newQuantity = Math.max(1, Math.min(service.quantity + change, serviceData.maxQuantity || 10));
+        const basePrice = serviceData.price;
+        const optionsPrice = (service.selectedOptions || []).reduce((sum, optId) => {
+          const opt = serviceData.options?.find(o => o.id === optId);
+          return sum + (opt?.price || 0);
+        }, 0);
+
+        const totalPrice = serviceData.pricePerPassenger 
+          ? (basePrice + optionsPrice) * newQuantity * (currentTicket?.passengers.length || 1)
+          : (basePrice + optionsPrice) * newQuantity;
+
         return {
           ...service,
           quantity: newQuantity,
-          totalPrice: (serviceData?.price || 0) * newQuantity
+          totalPrice: totalPrice
         };
       }
       return service;
@@ -626,25 +723,6 @@ export const AdditionalServicesSelection: React.FC<AdditionalServicesSelectionPr
             </Box>
           </Paper>
         </Box>
-      </Box>
-
-      {/* Navigation Buttons */}
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 4, gap: 2 }}>
-        <Button
-          onClick={onComplete}
-          variant="outlined"
-          size="large"
-        >
-          Продължи без допълнителни услуги
-        </Button>
-        <Button
-          onClick={onComplete}
-          variant="contained"
-          size="large"
-          disabled={selectedServices.length === 0}
-        >
-          Продължи с избраните услуги
-        </Button>
       </Box>
     </Box>
   );

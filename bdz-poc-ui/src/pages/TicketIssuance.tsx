@@ -23,6 +23,7 @@ import { ReviewStep } from './TicketIssuance/ReviewStep';
 import { RouteReviewStep } from './TicketIssuance/RouteReviewStep';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { AdditionalServicesSelection } from './TicketIssuance/AdditionalServicesSelection';
+import { PriceSummaryBar } from '../components/PriceSummaryBar';
 
 // Define step keys to better align with the use case UC-CashDesk-04
 const steps = [
@@ -146,18 +147,20 @@ const TicketIssuance: React.FC = () => {
   };
 
   return (
-    <Box sx={{ width: '100%' }}>
+    <Box sx={{ maxWidth: 1200, mx: 'auto', p: 3 }}>
       <Typography variant="h4" gutterBottom sx={{ mb: 2, textAlign: 'center' }}>
         Издаване на билет
       </Typography>
       
-      <Stepper activeStep={activeStep} sx={{ mb: 4 }}>
+      <Stepper activeStep={activeStep} sx={{ mb: 3 }}>
         {steps.map((label) => (
           <Step key={label}>
             <StepLabel>{label}</StepLabel>
           </Step>
         ))}
       </Stepper>
+
+      <PriceSummaryBar />
 
       <Paper sx={{ p: 3 }}>
         {renderStepContent(activeStep)}

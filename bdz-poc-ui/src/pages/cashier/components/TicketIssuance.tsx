@@ -85,22 +85,6 @@ const POPULAR_ROUTES: Route[] = [
     frequency: 70,
   },
   {
-    id: 'sofia-venice',
-    from: 'София',
-    to: 'Венеция',
-    country: 'Италия',
-    isDirect: false,
-    frequency: 65,
-  },
-  {
-    id: 'plovdiv-vienna',
-    from: 'Пловдив',
-    to: 'Виена',
-    country: 'Австрия',
-    isDirect: false,
-    frequency: 60,
-  },
-  {
     id: 'plovdiv-istanbul',
     from: 'Пловдив',
     to: 'Истанбул',
@@ -115,15 +99,7 @@ const POPULAR_ROUTES: Route[] = [
     country: 'Румъния',
     isDirect: true,
     frequency: 50,
-  },
-  {
-    id: 'burgas-istanbul',
-    from: 'Бургас',
-    to: 'Истанбул',
-    country: 'Турция',
-    isDirect: false,
-    frequency: 45,
-  },
+  }
 ].sort((a, b) => b.frequency - a.frequency); // Sort by frequency
 
 export default function TicketIssuance() {

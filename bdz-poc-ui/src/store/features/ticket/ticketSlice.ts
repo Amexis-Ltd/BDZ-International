@@ -74,10 +74,13 @@ const PASSENGER_CATEGORY_PRICES: Record<keyof PassengerCategories, number> = {
 
 const DISCOUNT_CARDS: Record<string, number> = {
   'Без намаление': 1.0,
-  'Карта за отстъпка': 0.5,
-  'Карта за семейство': 0.7,
-  'Карта за студент': 0.8,
-  'Карта за пенсионер': 0.7
+  'Пенсионер': 0.7,
+  'Студент': 0.8,
+  'Дете до 7 години': 0.5,
+  'Дете от 7 до 10 години': 0.7,
+  'Многодетни майки': 0.7,
+  'Военноинвалид': 0.5,
+  'ТПЛ': 0.7
 };
 
 const ticketSlice = createSlice({
@@ -99,12 +102,15 @@ const ticketSlice = createSlice({
         passengers: [{ 
           category: 'adults',
           discount: 'Без намаление', 
-          seatNumber: '' 
+          seatNumber: '',
+          carNumber: '',
+          documentNumber: undefined
         }],
         additionalServices: [],
         basePrice: 0,
         totalPrice: 0
       };
+      state.issuedTickets = [];
     },
     setRouteSelection: (state, action: PayloadAction<RouteSelectionPayload & { passengers?: PassengerCategories; basePrice?: number }>) => {
       if (!state.currentTicket) {
@@ -115,6 +121,7 @@ const ticketSlice = createSlice({
       const ticket = state.currentTicket;
       if (action.payload.basePrice !== undefined) {
         ticket.basePrice = action.payload.basePrice;
+        ticket.totalPrice = action.payload.basePrice;
       }
 
       ticket.route = {
@@ -269,7 +276,10 @@ export const selectCurrentTicket = (state: RootState) => state.ticket.currentTic
 export const selectIssuedTickets = (state: RootState) => state.ticket.issuedTickets;
 
 function calculateTotalPrice(state: TicketState) {
-  if (!state.currentTicket) return;
+  if (!state.currentTicket || typeof state.currentTicket.basePrice !== 'number' || isNaN(state.currentTicket.basePrice)) {
+    console.error('Invalid base price:', state.currentTicket?.basePrice);
+    return;
+  }
 
   const { basePrice, passengers, additionalServices, returnType } = state.currentTicket;
   
@@ -281,8 +291,11 @@ function calculateTotalPrice(state: TicketState) {
   });
 
   let totalPassengerPrice = passengers.reduce((sum, passenger) => {
-    const categoryMultiplier = PASSENGER_CATEGORY_PRICES[passenger.category || 'adults'];
-    const discountMultiplier = DISCOUNT_CARDS[passenger.discount || 'Без намаление'];
+    // Default to adult price if category is invalid
+    const categoryMultiplier = PASSENGER_CATEGORY_PRICES[passenger.category || 'adults'] || 1.0;
+    // Default to no discount if discount is invalid
+    const discountMultiplier = DISCOUNT_CARDS[passenger.discount || 'Без намаление'] || 1.0;
+    
     const passengerPrice = basePrice * categoryMultiplier * discountMultiplier;
     
     console.log('Passenger price calculation:', {
@@ -292,15 +305,30 @@ function calculateTotalPrice(state: TicketState) {
       passengerPrice
     });
     
-    return sum + passengerPrice;
+    return sum + (isNaN(passengerPrice) ? 0 : passengerPrice);
   }, 0);
 
+  // Double the price for round trips
   if (returnType !== 'one-way') {
     totalPassengerPrice *= 2;
   }
 
-  const servicesPrice = additionalServices.reduce((sum, service) => sum + service.totalPrice, 0);
+  // Calculate services price with validation
+  const servicesPrice = additionalServices.reduce((sum, service) => {
+    const servicePrice = typeof service.totalPrice === 'number' && !isNaN(service.totalPrice) 
+      ? service.totalPrice 
+      : 0;
+    return sum + servicePrice;
+  }, 0);
+
   const totalPrice = totalPassengerPrice + servicesPrice;
+
+  // Final validation of total price
+  if (isNaN(totalPrice)) {
+    console.error('Invalid total price calculated:', { totalPassengerPrice, servicesPrice });
+    state.currentTicket.totalPrice = 0;
+    return;
+  }
 
   console.log('Final price calculation:', {
     totalPassengerPrice,
