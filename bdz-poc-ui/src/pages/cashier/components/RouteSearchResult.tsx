@@ -47,6 +47,8 @@ import {
 import { useLocation, useNavigate } from 'react-router-dom';
 import { format, parseISO, differenceInMinutes, addMinutes } from 'date-fns';
 import { bg } from 'date-fns/locale';
+import { useAppDispatch } from '../../../store/hooks';
+import { setRouteSelection } from '../../../store/features/ticket/ticketSlice';
 
 // Types
 type Carrier = 'BDZ' | 'DB' | 'OBB' | 'MAV' | 'CFR' | 'TCDD' | 'ZSSK' | 'SBB' | 'SNCF' | 'RENFE';
@@ -688,6 +690,7 @@ export default function RouteSearchResult() {
   const theme = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const searchParams = location.state?.route;
 
   // State
@@ -790,12 +793,31 @@ export default function RouteSearchResult() {
 
   const handleRouteSelect = (route: Route) => {
     setSelectedRoute(route);
-    // Navigate to tickets page with route and passenger information
+    
+    // Save route data to ticketSlice
+    const routePayload = {
+      fromStation: route.segments[0].fromStation,
+      toStation: route.segments[route.segments.length - 1].toStation,
+      departureDate: route.departureTime,
+      departureTime: route.departureTime,
+      viaStation: route.segments.length > 1 ? route.segments[0].toStation : undefined,
+      basePrice: route.totalPrice,
+      passengers: searchParams?.passengers || {
+        adults: 1,
+        children: 0,
+        seniors: 0,
+        students: 0
+      }
+    };
+    
+    dispatch(setRouteSelection(routePayload));
+    
+    // Navigate to tickets page
     navigate('/cashier/tickets', { 
       state: { 
         route: {
           ...route,
-          passengers: searchParams?.passengers // Include passenger data from search params
+          passengers: searchParams?.passengers
         }
       } 
     });

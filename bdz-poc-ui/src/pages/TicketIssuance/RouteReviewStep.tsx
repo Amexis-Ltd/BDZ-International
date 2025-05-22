@@ -14,6 +14,7 @@ import {
   AccessTime as TimeIcon,
   CalendarToday as CalendarIcon,
   LocationOn as LocationIcon,
+  AttachMoney as MoneyIcon,
 } from '@mui/icons-material';
 import { useAppSelector } from '../../store/hooks';
 import { selectCurrentTicket } from '../../store/features/ticket/ticketSlice';
@@ -124,9 +125,10 @@ export const RouteReviewStep: React.FC<RouteReviewStepProps> = ({ onComplete }) 
             </ListItem>
           </>
         )}
+
       </List>
 
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 4 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, mt: 3 }}>
         <Button
           variant="outlined"
           onClick={() => navigate('/cashier/routes')}

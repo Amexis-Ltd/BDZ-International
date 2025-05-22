@@ -99,12 +99,15 @@ const ticketSlice = createSlice({
         passengers: [{ 
           category: 'adults',
           discount: 'Без намаление', 
-          seatNumber: '' 
+          seatNumber: '',
+          carNumber: '',
+          documentNumber: undefined
         }],
         additionalServices: [],
         basePrice: 0,
         totalPrice: 0
       };
+      state.issuedTickets = [];
     },
     setRouteSelection: (state, action: PayloadAction<RouteSelectionPayload & { passengers?: PassengerCategories; basePrice?: number }>) => {
       if (!state.currentTicket) {
@@ -115,6 +118,7 @@ const ticketSlice = createSlice({
       const ticket = state.currentTicket;
       if (action.payload.basePrice !== undefined) {
         ticket.basePrice = action.payload.basePrice;
+        ticket.totalPrice = action.payload.basePrice;
       }
 
       ticket.route = {

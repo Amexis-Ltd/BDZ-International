@@ -53,6 +53,42 @@ export const DiscountsStep: React.FC<DiscountsStepProps> = ({ onComplete }) => {
       dispatch(startNewTicket());
     }
   }, [currentTicket, dispatch]);
+
+  // Set initial discounts based on passenger category only once when component mounts
+  React.useEffect(() => {
+    if (currentTicket) {
+      const hasInitialDiscounts = currentTicket.passengers.some(p => p.discount && p.discount !== 'Без намаление');
+      
+      // Only set initial discounts if no passengers have discounts yet
+      if (!hasInitialDiscounts) {
+        currentTicket.passengers.forEach((passenger, index) => {
+          let discount = 'Без намаление';
+          
+          switch (passenger.category) {
+            case 'seniors':
+              discount = 'Пенсионер';
+              break;
+            case 'students':
+              discount = 'Студент';
+              break;
+            case 'children':
+              discount = 'Дете до 7 години';
+              break;
+          }
+
+          if (discount !== 'Без намаление') {
+            dispatch(updatePassenger({
+              index,
+              data: { 
+                discount,
+                documentNumber: DISCOUNTS_REQUIRING_DOCUMENT.includes(discount) ? documentNumbers[index] || '' : undefined
+              }
+            }));
+          }
+        });
+      }
+    }
+  }, []); // Empty dependency array means this runs only once when component mounts
   
   const handleDiscountChange = (index: number, value: string) => {
     if (currentTicket) {
