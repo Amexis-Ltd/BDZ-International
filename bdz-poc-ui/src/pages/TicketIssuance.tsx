@@ -166,23 +166,30 @@ const TicketIssuance: React.FC = () => {
         {renderStepContent(activeStep)}
         
         <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
-          <Button
-            disabled={activeStep === 0}
-            onClick={handleBack}
-            variant="outlined"
-          >
-            Назад
-          </Button>
+          {activeStep === 0 ? (
+            <Button
+              onClick={() => navigate('/cashier/routes/results')}
+              variant="outlined"
+            >
+              Промени маршрут
+            </Button>
+          ) : (
+            <Button
+              disabled={activeStep === 0}
+              onClick={handleBack}
+              variant="outlined"
+            >
+              Назад
+            </Button>
+          )}
           {activeStep === steps.length - 1 ? (
             <Button variant="contained" color="success" onClick={handleFinish}>
               Издаване и плащане
             </Button>
           ) : (
-             ![0, 3, 4].includes(activeStep) && (
-                <Button variant="contained" onClick={handleNext}>
-                  Напред
-                </Button>
-             )
+            <Button variant="contained" onClick={handleNext}>
+              Напред
+            </Button>
           )}
         </Box>
       </Paper>

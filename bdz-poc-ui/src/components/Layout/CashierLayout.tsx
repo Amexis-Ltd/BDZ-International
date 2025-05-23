@@ -34,6 +34,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../../store/hooks';
 import { selectUsername, selectUserRole, logout } from '../../store/features/auth/authSlice';
 import { CurrentTime } from '../../components/CurrentTime';
+import Breadcrumb from '../Breadcrumb';
 
 // Styled components
 const Main = styled('main')(({ theme }) => ({
@@ -266,6 +267,7 @@ const CashierLayout: React.FC<CashierLayoutProps> = ({ children }) => {
       </StyledAppBar>
 
       <Main>
+        <Breadcrumb />
         {children}
       </Main>
     </Box>

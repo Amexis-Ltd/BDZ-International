@@ -47,8 +47,8 @@ import {
 import { useLocation, useNavigate } from 'react-router-dom';
 import { format, parseISO, differenceInMinutes, addMinutes } from 'date-fns';
 import { bg } from 'date-fns/locale';
-import { useAppDispatch } from '../../../store/hooks';
-import { setRouteSelection } from '../../../store/features/ticket/ticketSlice';
+import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+import { setRouteSelection, startNewTicket, selectSearchParams } from '../../../store/features/ticket/ticketSlice';
 
 // Types
 type Carrier = 'BDZ' | 'DB' | 'OBB' | 'MAV' | 'CFR' | 'TCDD' | 'ZSSK' | 'SBB' | 'SNCF' | 'RENFE';
@@ -691,7 +691,8 @@ export default function RouteSearchResult() {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const searchParams = location.state?.route;
+  const reduxSearchParams = useAppSelector(selectSearchParams);
+  const searchParams = reduxSearchParams || location.state?.route;
 
   // State
   const [routes, setRoutes] = useState<Route[]>(MOCK_ROUTES);
@@ -794,6 +795,9 @@ export default function RouteSearchResult() {
   const handleRouteSelect = (route: Route) => {
     setSelectedRoute(route);
     
+    // Start new ticket process first
+    dispatch(startNewTicket());
+    
     // Save route data to ticketSlice
     const routePayload = {
       fromStation: route.segments[0].fromStation,
@@ -812,7 +816,7 @@ export default function RouteSearchResult() {
     
     dispatch(setRouteSelection(routePayload));
     
-    // Navigate to tickets page
+    // Navigate to ticket issuance page with steps
     navigate('/cashier/tickets', { 
       state: { 
         route: {
@@ -832,36 +836,48 @@ export default function RouteSearchResult() {
   };
 
   // Render functions
-  const renderSearchSummary = () => (
-    <Paper sx={{ p: 2, mb: 3 }}>
-      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-        <Box sx={{ flex: '1 1 300px' }}>
-          <Typography variant="h6" gutterBottom>
-            {searchParams?.fromStation} → {searchParams?.toStation}
-          </Typography>
-          <Typography variant="body1" color="text.secondary">
-            {format(new Date(searchParams?.departureDate), 'EEEE, d MMMM yyyy', { locale: bg })}
-            {searchParams?.departureTime && ` • ${searchParams.departureTime}`}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            {Object.entries(searchParams?.passengers || {})
-              .filter(([_, count]) => (count as number) > 0)
-              .map(([type, count]) => `${type}: ${count}`)
-              .join(', ')}
-          </Typography>
+  const renderSearchSummary = () => {
+    // Fallback values when searchParams is not available
+    const fromStation = searchParams?.fromStation || 'Неизвестна гара';
+    const toStation = searchParams?.toStation || 'Неизвестна гара';
+    const departureDate = searchParams?.departureDate;
+    const departureTime = searchParams?.departureTime;
+    const passengers = searchParams?.passengers || { adults: 1, children: 0, seniors: 0, students: 0 };
+
+    return (
+      <Paper sx={{ p: 2, mb: 3 }}>
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+          <Box sx={{ flex: '1 1 300px' }}>
+            <Typography variant="h6" gutterBottom>
+              {fromStation} → {toStation}
+            </Typography>
+            <Typography variant="body1" color="text.secondary">
+              {departureDate && !isNaN(new Date(departureDate).getTime()) 
+                ? format(new Date(departureDate), 'EEEE, d MMMM yyyy', { locale: bg })
+                : 'Не е избрана дата'
+              }
+              {departureTime && ` • ${departureTime}`}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              {Object.entries(passengers)
+                .filter(([_, count]) => (count as number) > 0)
+                .map(([type, count]) => `${type}: ${count}`)
+                .join(', ')}
+            </Typography>
+          </Box>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-start' }}>
+            <Button
+              variant="outlined"
+              startIcon={<ArrowBack />}
+              onClick={() => navigate('/cashier/routes')}
+            >
+              Промени параметрите
+            </Button>
+          </Box>
         </Box>
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-start' }}>
-          <Button
-            variant="outlined"
-            startIcon={<ArrowBack />}
-            onClick={() => navigate('/cashier/routes')}
-          >
-            Промени параметрите
-          </Button>
-        </Box>
-      </Box>
-    </Paper>
-  );
+      </Paper>
+    );
+  };
 
   const renderFilters = () => (
     <Paper sx={{ p: 2, mb: 3 }}>

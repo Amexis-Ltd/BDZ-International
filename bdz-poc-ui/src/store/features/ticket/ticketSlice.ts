@@ -10,6 +10,14 @@ export interface RouteSelectionPayload {
   basePrice?: number;
 }
 
+export interface SearchParams {
+  fromStation: string;
+  toStation: string;
+  departureDate: string;
+  departureTime?: string;
+  passengers: PassengerCategories;
+}
+
 export interface Passenger {
   discount?: string;
   seatNumber?: string;
@@ -46,6 +54,7 @@ export interface TicketData {
 }
 
 interface TicketState {
+  searchParams: SearchParams | null;
   currentTicket: {
     route: RouteSelectionPayload | null;
     passengerCount: number;
@@ -61,6 +70,7 @@ interface TicketState {
 }
 
 const initialState: TicketState = {
+  searchParams: null,
   currentTicket: null,
   issuedTickets: [],
 };
@@ -87,6 +97,9 @@ const ticketSlice = createSlice({
   name: 'ticket',
   initialState,
   reducers: {
+    setSearchParams: (state, action: PayloadAction<SearchParams>) => {
+      state.searchParams = action.payload;
+    },
     startNewTicket: (state) => {
       state.currentTicket = {
         route: null,
@@ -261,6 +274,7 @@ const ticketSlice = createSlice({
 
 const { actions } = ticketSlice;
 
+export const setSearchParams = actions.setSearchParams as ActionCreatorWithPayload<SearchParams>;
 export const startNewTicket = actions.startNewTicket;
 export const setRouteSelection = actions.setRouteSelection as ActionCreatorWithPayload<RouteSelectionPayload & { passengers?: PassengerCategories; basePrice?: number }>;
 export const setPassengerCount = actions.setPassengerCount as ActionCreatorWithPayload<number>;
@@ -272,6 +286,7 @@ export const issueTicket = actions.issueTicket;
 export const cancelTicketProcess = actions.cancelTicketProcess;
 export const setAdditionalServices = actions.setAdditionalServices as ActionCreatorWithPayload<AdditionalService[]>;
 
+export const selectSearchParams = (state: RootState) => state.ticket.searchParams;
 export const selectCurrentTicket = (state: RootState) => state.ticket.currentTicket;
 export const selectIssuedTickets = (state: RootState) => state.ticket.issuedTickets;
 
