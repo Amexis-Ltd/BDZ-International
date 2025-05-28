@@ -36,7 +36,7 @@ export const RouteReviewStep: React.FC<RouteReviewStepProps> = ({ onComplete }) 
         </Typography>
         <Button
           variant="contained"
-          onClick={() => navigate('/cashier/routes')}
+          onClick={() => navigate('/cashier/routes/results')}
           sx={{ mt: 2 }}
         >
           Избери маршрут
@@ -127,21 +127,6 @@ export const RouteReviewStep: React.FC<RouteReviewStepProps> = ({ onComplete }) 
         )}
 
       </List>
-
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, mt: 3 }}>
-        <Button
-          variant="outlined"
-          onClick={() => navigate('/cashier/routes')}
-        >
-          Промени маршрут
-        </Button>
-        <Button
-          variant="contained"
-          onClick={onComplete}
-        >
-          Продължи
-        </Button>
-      </Box>
     </Box>
   );
 }; 

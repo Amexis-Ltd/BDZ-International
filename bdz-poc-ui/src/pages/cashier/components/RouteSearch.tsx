@@ -18,6 +18,8 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { bg } from 'date-fns/locale';
 import { useNavigate } from 'react-router-dom';
+import { useAppDispatch } from '../../../store/hooks';
+import { setSearchParams } from '../../../store/features/ticket/ticketSlice';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -131,6 +133,7 @@ const EUROPEAN_CITIES = [
 
 export default function RouteSearch() {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const [route, setRoute] = useState({
     fromStation: '',
     toStation: '',
@@ -191,6 +194,15 @@ export default function RouteSearch() {
         },
       },
     });
+
+    // Dispatch the search parameters
+    dispatch(setSearchParams({
+      fromStation: route.fromStation,
+      toStation: route.toStation,
+      departureDate: route.departureDate.toISOString(),
+      departureTime: route.departureTime,
+      passengers: route.passengers,
+    }));
   };
 
   const getTotalPassengers = () => {

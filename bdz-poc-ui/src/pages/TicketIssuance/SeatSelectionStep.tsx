@@ -417,19 +417,6 @@ export const SeatSelectionStep: React.FC<SeatSelectionStepProps> = ({ onComplete
           ))}
         </Box>
       </Box>
-      
-      <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
-        <Button
-          onClick={onComplete}
-          color="primary"
-          variant="contained"
-          size="large"
-          sx={{ fontSize: '1rem', py: 1.5, px: 4 }}
-          disabled={!currentTicket?.passengers.every(p => p.seatNumber)}
-        >
-          Продължи
-        </Button>
-      </Box>
     </Box>
   );
 };

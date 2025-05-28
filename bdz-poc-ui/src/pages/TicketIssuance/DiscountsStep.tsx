@@ -209,19 +209,6 @@ export const DiscountsStep: React.FC<DiscountsStepProps> = ({ onComplete }) => {
           </Paper>
         ))}
       </Box>
-      
-      <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
-        <Button 
-          variant="contained" 
-          onClick={onComplete}
-          disabled={!currentTicket?.passengers.every(p => 
-            !DISCOUNTS_REQUIRING_DOCUMENT.includes(p.discount || '') || 
-            (p.documentNumber && p.documentNumber.length > 0)
-          )}
-        >
-          Продължи
-        </Button>
-      </Box>
     </Box>
   );
 }; 
